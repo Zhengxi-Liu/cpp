@@ -19,7 +19,7 @@ int main(){
                 dp[i][j] = min(dp[i][j], dp[i][k], dp[k + 1][j]);
         }
     cout << dp[1][n] << endl;
-    return 0;//test
+    return 0;
 }
 
 
