@@ -95,6 +95,7 @@ inline int build(int l, int r){
     return x;
 }
 
+
 inline int update(int p, int l, int r, int x, int val){
     int rt = ++ cnt;
     v[rt] = v[p], L[rt] = L[p], R[rt] = R[p];
