@@ -152,16 +152,9 @@ int main(){
 }*/
 #include<bits/stdc++.h>
 using namespace std;
-const int N = 2e5 + 7;
-int a[N], dis[N];
+double a, b;
 int main(){
-    cin >> n >> x >> y;
-    for(int i = 1;i <= n;i ++){
-        cin >> a[i];
-        dis[i] = dis[i - 1] + a[i];
-    }
-    for(int i = 1;i <= n - x + 1;i ++){
-
-    }
+    cin >> a >> b;
+    cout << a * b << endl;
     return 0;
 }

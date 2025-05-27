@@ -185,7 +185,7 @@ int main(){
     }
     return 0;
 }*/
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
 const int N = 3e2 + 7;
 int dp[N][N], a[N], dis[N], n;
@@ -213,5 +213,20 @@ int main(){
         //cout << endl;
     }
     cout << dp[1][n] << endl;
+    return 0;
+}*/
+#include<bits/stdc++.h>
+using namespace std;
+int n, cnt, x = 6, y = 10, z = 15;
+int main(){
+    cin >> n;
+    for(int i = 3; i <= n; i ++){
+        if(i % 3 == 0)
+            cout << x * i << endl;
+        else if(i % 3 == 1)
+            cout << y * i << endl;
+        else
+            cout << z * i << endl;
+    }
     return 0;
 }

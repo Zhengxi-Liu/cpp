@@ -742,7 +742,7 @@ int main(){
     return 0;
 }*/
 
-//P1471 方差
+//P1471 方差, 未完成❎
 /*#include<bits/stdc++.h>
 using namespace std;
 const int N = 1e5 + 7;

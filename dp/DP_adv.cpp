@@ -300,7 +300,7 @@ void update(int k, int l, int r, int x, int y, int v){
     if(x <= mid) 
         update(k << 1, l, mid, x, y, v);
     if(y > mid) 
-        update(k << 1 | 1, mid+1, r, x, y, v);
+        update(k << 1 | 1, mid + 1, r, x, y, v);
     push_up(k);
 }
 int query(int k, int l, int r, int x, int y){

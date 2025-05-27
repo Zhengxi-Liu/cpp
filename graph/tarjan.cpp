@@ -1,3 +1,4 @@
+//强联通分量模版
 /*#include<bits/stdc++.h>
 using namespace std;
 
@@ -56,7 +57,9 @@ int main(){
     cout << ans << endl;
     return 0;
 }*/
-#include<bits/stdc++.h>
+
+//强联通分量 + 索点 + 拓扑
+/*#include<bits/stdc++.h>
 using namespace std;
 const int N = 1e4 + 7, M = 1e5 + 7;
 struct str{
@@ -139,4 +142,115 @@ int main(){
         ans = max(ans, dp[i]);
     cout << ans << endl;
     return 0;
+}*/
+
+//P1262 间谍网络
+//https://www.luogu.com.cn/problem/P1262
+/*#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 3e3 + 7;
+
+int dfn[N], low[N], times;
+int id[N], sz[N], vis[N], mn[N], cnt;
+bool f[N];
+stack <int> st;
+
+int cst[N], in[N], s[N];
+
+vector <int> a[N], b[N];
+
+int n, p, m, x, y, ans, flag;
+
+void tarjan(int x){
+    dfn[x] = low[x] = ++ times;
+    st.push(x);
+    f[x] = true;
+    for(auto to : a[x]){
+        if(!dfn[to]){
+            tarjan(to);
+            low[x] = min(low[x], low[to]);
+        }
+        else if(f[to])
+            low[x] = min(low[x], dfn[to]);
+    }
+    if(low[x] == dfn[x]){
+        int tp;
+        cnt ++;
+        do {
+            tp = st.top();
+            st.pop();
+            f[tp] = false;
+            sz[cnt] ++;
+            id[tp] = cnt;
+            if(cst[tp])
+                vis[cnt] = min(vis[cnt], cst[tp]);
+            if(!cst[tp])
+                mn[cnt] = min(mn[cnt], tp);
+        } while(tp != x);
+    }
 }
+
+int main(){
+
+    cin >> n >> p;
+
+    for(int i = 1; i <= p; i ++)
+        cin >> x >> cst[x];
+    
+    cin >> m;
+
+    for(int i = 1; i <= m; i ++){
+        cin >> x >> y;
+        a[x].push_back(y);
+    }
+
+    memset(vis, 0x3f, sizeof(vis));
+    memset(mn, 0x3f, sizeof(mn));
+
+    for(int i = 1; i <= n; i ++)
+        if(!dfn[i])
+            tarjan(i);
+
+    for(int i = 1; i <= n; i ++)
+        for(auto to : a[i]){
+            if(id[i] != id[to]){
+                in[id[to]] ++;
+                b[id[i]].push_back(id[to]);
+            }
+        }
+    
+    for(int i = 1; i <= cnt; i ++)
+        if(!in[i]){
+            if(vis[i] == 0x3f3f3f3f)
+                flag = 1;
+            ans += vis[i];
+        }
+    if(!flag){
+        cout << "YES" << endl << ans << endl;
+        return 0;
+    }
+
+    queue <int> q;
+    
+    for(int i = 1; i <= cnt; i ++)
+        if(!in[i] && vis[i] != 0x3f3f3f3f)
+            q.push(i);
+
+    while(!q.empty()){
+        int now = q.front();
+        q.pop();
+        s[now] = 1;
+        for(auto to : b[now]){
+            in[to] --;
+            if(!in[to])
+                q.push(to);
+        }
+    }
+    for(int i = 1; i <= cnt; i ++)
+        if(!s[i])
+            ans = min(ans, mn[i]);
+    cout << "NO" << endl << ans << endl;
+    return 0;
+}*/
+
