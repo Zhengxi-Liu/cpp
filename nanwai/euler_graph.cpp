@@ -197,7 +197,7 @@ int main(){
         if(op == 1)
             a[y].push_back({x, {i, -1}});
     }
-
+    
     if(op == 1)
         work1();
     else 
