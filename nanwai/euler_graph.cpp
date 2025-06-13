@@ -128,60 +128,40 @@ int main(){
 }*/
 
 // C. 欧拉回路
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
 
 #define no { printf("NO\n"); exit(0);}
 
-const int N = 1e5 + 7;
+const int N = 5e5 + 7;
 
-typedef pair <int, pair <int, int> > PI;
+typedef pair <int, int > PI;
 
 vector <PI> a[N];
 
 int vis[N], ans[N], in[N], out[N], b[N];
 
-int op, n, m, x, y, cnt, idx = 1;
+int op, n, m, x, y, cnt, idx = 1, tot;
 
-void dfs1(int x){
-    for(PI tox : a[x]){
-        int to = tox.first, id = tox.second.first, mul = tox.second.second;
-        if(vis[id])
-            continue;
-        vis[id] = 1;
-        dfs1(to);
-        ans[++ cnt] = id * mul;
-    }
-}
-
-void dfs2(int x){
-    for(PI tox : a[x]){
-        int to = tox.first, id = tox.second.first;
-        if(vis[id])
-            continue;
-        vis[id] = 1;
-        dfs2(to);
-        ans[++ cnt] = id;
-    }
-}
 void dfs(int x){
-    b[x] = 1;
-    for(PI tox : a[x]){
-        int to = tox.first;
-        if(b[to])
+    while(!a[x].empty()){
+        int to = a[x].back().first, id = a[x].back().second;
+        a[x].pop_back();
+        if(vis[abs(id)])
             continue;
+        tot ++;
+        vis[abs(id)] = vis[abs(id)] = 1;
         dfs(to);
+        ans[++ cnt] = id;
     }
 }
 void work1(){
     for(int i = 1; i <= n; i ++)
         if(a[i].size() % 2 == 1) no
-    dfs1(idx);
 }
 void work2(){
     for(int i = 1; i <= n; i ++)
         if(out[i] != in[i]) no
-    dfs2(idx);
 }
 
 int main(){
@@ -190,12 +170,12 @@ int main(){
 
     for(int i = 1; i <= m; i ++){
         scanf("%d %d", &x, &y);
-        a[x].push_back({y, {i, 1}});
+        a[x].push_back({y, i});
         out[x] ++;
         in[y] ++;
         idx = x;
         if(op == 1)
-            a[y].push_back({x, {i, -1}});
+            a[y].push_back({x, -i});
     }
     
     if(op == 1)
@@ -203,12 +183,83 @@ int main(){
     else 
         work2();
     dfs(idx);
-    for(int i = 1; i <= n; i ++)
-        if(!b[i] && a[i].size()) no
+    if(tot < m)
+        no
     printf("YES\n");
     for(int i = cnt; i >= 1; i --)
         printf("%d ", ans[i]);
     printf("\n");
 
     return 0;
+}*/
+
+// D. LCA查询
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 1e6 + 7;
+
+vector <int> a[N];
+
+int n, q, seed, x, y, cnt, ans;
+
+int dep[N], dfn[N], que[N], lg[N], st[N][21];
+
+void dfs(int x, int fa){ // 欧拉序
+    dfn[x] = ++ cnt, que[cnt] = x;
+    dep[x] = dep[fa] + 1;
+    for(int to : a[x]){
+        if(to == fa) continue;
+        dfs(to, x);
+        que[++ cnt] = x;
+    }
 }
+
+void build(){
+    for(int i = 1; i <= cnt; i ++) st[i][0] = que[i];
+    for(int j = 1; j <= 20; j ++)
+        for(int i = 1; i + (1 << j) <= cnt; i ++){
+            int f1 = st[i][j - 1], f2 = st[i + (1 << (j - 1))][j - 1];
+            st[i][j] = dep[f1] < dep[f2] ? f1: f2;
+        }
+    lg[0] = -1;
+    for(int i = 1; i <= cnt; i ++)
+        lg[i] = lg[i >> 1] + 1;
+}
+
+int LCA(int x, int y){
+    if(dfn[x] > dfn[y]) swap(x, y);
+    x = dfn[x], y = dfn[y];
+    int lgg = lg[y - x + 1], f1 = st[x][lgg], f2 = st[y - (1 << lgg) + 1][lgg];
+    return dep[f1] < dep[f2] ? f1 : f2;
+}
+
+signed main(){
+
+    cin >> n >> q >> seed;
+
+    mt19937 rnd(seed);
+
+    for(int i = 1; i < n; i ++){
+        cin >> x >> y;
+        a[x].push_back(y);
+        a[y].push_back(x);
+    }
+
+    dfs(1, 0);
+
+    build();
+
+    for(int i = 1; i <= q; i ++){
+        x = rnd() % n + 1;
+        y = rnd() % n + 1;
+        //cout << x << ' ' << y << ' ' << LCA(x, y) << endl;
+        ans += i ^ LCA(x, y);
+    }
+    cout << ans << endl;
+
+    return 0;
+}*/
+
