@@ -264,40 +264,63 @@ signed main(){
 }*/
 
 // P1333 瑞瑞的木棍
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
 
-const int N = 25e4 + 7;
+const int N = 5e5 + 7;
 
 string s[N], t[N];
 
-map <string, int> out, in;
+vector <int> a[N];
 
-int n, cnt1, cnt2;
+unordered_map <string, int> mp;
+int in[N], out[N];
+
+bool b[N];
+int n, cnt1, cnt2, cnt;
 
 #define no {cout << "Impossible" << endl; exit(0);}
 
 void dfs(int x){
-    
+    b[x] = 1;
+    for(int to : a[x]){
+        if(b[to]) continue;
+        dfs(to);
+    }
+}
+
+void nw(string s, string t){
+    int x, y;
+    if(!mp.count(s)) mp[s] = ++ cnt;
+    if(!mp.count(t)) mp[t] = ++ cnt;
+    x = mp[s], y = mp[t];
+    a[x].push_back(y);
+    a[y].push_back(x);
 }
 
 int main(){
 
     while(++ n && cin >> s[n] >> t[n]){
         if(cin.fail()) break;
-        out[s[n]] ++;
-        in[t[n]] ++;
+        if(s[n] == ".") break;
+        nw(s[n], t[n]);
+        out[mp[s[n]]] ++;
+        in[mp[t[n]]] ++;
     }
 
-    for(auto x : in){
-        if(in[x.first] == out[x.first]) continue;
-        if(abs(in[x.first] - out[x.first]) > 1) no
-        if(in[x.first] - out[x.first] == 1) cnt1 ++;
-        else cnt2 ++;
+    for(int i = 1; i <= cnt; i ++){
+        if(in[i] == out[i] || !in[i] && !out[i]) continue;
+        if((in[i] + out[i]) % 2 == 1) cnt1 ++;
     }
 
-    if(!(cnt1 <= 1 && cnt2 <= 1)) no
+    for(int i = 1; i <= cnt; i ++)
+        if(a[i].size()){ dfs(i); break;}
+    for(int i = 1; i <= cnt; i ++)
+        if(a[i].size() && !b[i]) no
+
+    if(cnt1 > 2) no
     cout << "Possible" << endl;
 
     return 0;
-}
+}*/
+
