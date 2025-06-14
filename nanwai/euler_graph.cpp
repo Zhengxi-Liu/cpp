@@ -263,3 +263,41 @@ signed main(){
     return 0;
 }*/
 
+// P1333 瑞瑞的木棍
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 25e4 + 7;
+
+string s[N], t[N];
+
+map <string, int> out, in;
+
+int n, cnt1, cnt2;
+
+#define no {cout << "Impossible" << endl; exit(0);}
+
+void dfs(int x){
+    
+}
+
+int main(){
+
+    while(++ n && cin >> s[n] >> t[n]){
+        if(cin.fail()) break;
+        out[s[n]] ++;
+        in[t[n]] ++;
+    }
+
+    for(auto x : in){
+        if(in[x.first] == out[x.first]) continue;
+        if(abs(in[x.first] - out[x.first]) > 1) no
+        if(in[x.first] - out[x.first] == 1) cnt1 ++;
+        else cnt2 ++;
+    }
+
+    if(!(cnt1 <= 1 && cnt2 <= 1)) no
+    cout << "Possible" << endl;
+
+    return 0;
+}
