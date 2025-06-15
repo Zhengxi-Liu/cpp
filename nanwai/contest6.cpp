@@ -201,16 +201,15 @@ int gcd(int x, int y){
 int dfs(int a, int b){
     if(a == b) return 1;
     if(a <= 0 || b <= 0) return 0;
-    int t = gcd(a, b), s = a + b;
-    a = s - min(a, b), b = s - max(a, b);
+    int t = gcd(a, b);
     if(t == 1){
-        if(a - b == 1)
-            return b;
+        if(abs(a - b) == 1)
+            return min(a, b);
         int minn = 1e18;
-        for(int i = 1; i * i <= a - b; i ++)
-            if((a - b) % i == 0){
+        for(int i = 1; i * i <= abs(a - b); i ++)
+            if(abs(a - b) % i == 0){
                 if(i > 1) minn = min(minn, a % i);
-                minn = min(minn, a % (a - b) / i);
+                minn = min(minn, a % (abs(a - b) / i));
             }
         return dfs(a - minn, b - minn) + minn;
     }
