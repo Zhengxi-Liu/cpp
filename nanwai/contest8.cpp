@@ -63,7 +63,7 @@ signed main(){
 }*/
 
 //C. 笑脸符号
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
 
 const int N = 1e3 + 7;
@@ -79,19 +79,92 @@ int main(){
     dp[1] = 0;
 
     for(int i = 1; i < N; i ++){
-        for(int j = 1; j < i; j ++)
-            dp[j] = min(dp[j], dp[i] + i - j);
-        for(int j = i + i; j < N; j += i){
+        for(int j = i + 1; j < N; j ++)
+            dp[i] = min(dp[i], dp[j] + j - i);
+        for(int j = i + i; j < N; j += i)
             dp[j] = min(dp[j], dp[i] + (j - i) / i + 1);
-        }
-        // if(i % 2 == 0) dp[i] = min(dp[i], dp[i / 2] + 2);
     }
-
-    // for(int i = 1; i <= n; i ++)
-    //     cout << dp[i] << ' ';
-    // cout << endl;
 
     cout << dp[n] << endl;
 
     return 0;
+}*/
+
+//D. LCM的GCD
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 2e5 + 7;
+
+int mn1[N], mn2[N], c[N];
+
+int fct[N], pw[N];
+
+int a[N], n, cnt, ans = 1;
+
+bool prime[N];
+
+void prm(){
+    prime[1] = true;
+    for(int i = 2; i < N; i ++){
+        if(prime[i]) continue;
+        for(int j = i + i; j < N; j += i) prime[j] = true;
+    }
 }
+
+void upd(int x){
+
+    cnt = 0;
+
+    for(int i = 2; i * i <= x; i ++){
+        if(!prime[i] && x % i == 0){ fct[++ cnt] = i; pw[cnt] = 0; }
+        while(!prime[i] && x % i == 0){
+            pw[cnt] ++;
+            x /= i;
+        }
+    }
+
+    if(x != 1) fct[++ cnt] = x, pw[cnt] = 1;
+
+    for(int i = 1; i <= cnt; i ++){
+        x = fct[i];
+        c[x] ++;
+        if(mn1[x] >= pw[i]){
+            mn2[x] = mn1[x];
+            mn1[x] = pw[i];
+        }
+        else if(pw[i] > mn1[x] && pw[i] < mn2[x])
+            mn2[x] = pw[i];
+    }
+
+}
+
+signed main(){
+
+    cin >> n;
+
+    for(int i = 1; i <= n; i ++) cin >> a[i];
+
+    prm();
+
+    memset(mn1, 0x3f, sizeof(mn1));
+    memset(mn2, 0x3f, sizeof(mn2));
+
+    for(int i = 1; i <= n; i ++) upd(a[i]);
+
+    for(int i = 2; i < N; i ++){
+        if(c[i] == n){
+            ans *= pow(i, mn2[i]);
+        }
+        else if(c[i] == n - 1){
+            ans *= pow(i, mn1[i]);
+        }
+    }
+
+    cout << ans << endl;
+
+    return 0;
+}*/
+
