@@ -168,3 +168,128 @@ signed main(){
     return 0;
 }*/
 
+//E. 打包正方体
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+int n, m, l, x;
+
+signed main(){
+
+    cin >> n >> m >> l;
+
+    x = l * l;
+
+    int ans = m * x * l + (n - 1) / x * x + x;
+
+    for(int i = l; i * i * i <= ans; i ++){
+        for(int j = i; i * j * j <= ans; j ++){
+            int p = (i / l) * (j / l);
+            int h = (m - 1) / p * l + l;
+            int lft = i * j * h - m * x * l - n;
+            if(lft >= 0){ 
+                ans = min(ans, i * j * h);
+                //cout << "1: " << i << ' ' << j << ' ' << h << endl;
+            }
+            else {
+                //cout << h << ' ' << lft << " // ";
+                h = h + (-1 - lft) / (i * j) + 1;
+                //cout << "2: " << i << ' ' << j << ' ' << h << endl;
+                ans = min(ans, i * j * h);
+            }
+        }
+    }
+    cout << ans << endl;
+
+    return 0;
+}*/
+
+//F. 建造警察局
+/*#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 7;
+
+int dfn[N], low[N], clk;
+int id[N], mn[N], cnt;
+stack <int> st;
+bool f[N];
+
+int in[N], mk[N];
+vector <int> a[N];
+pair <int, int> s[N];
+
+int n, nm, sum; char c; double avg;
+
+void tarjan(int x){
+
+    dfn[x] = low[x] = ++ clk;
+    st.push(x);
+    f[x] = true;
+
+    for(int to : a[x]){
+        if(!dfn[to]){
+            tarjan(to);
+            low[x] = min(low[x], low[to]);
+        }
+        else if(f[to]) low[x] = min(low[x], dfn[to]);
+    }
+
+    if(dfn[x] == low[x]){
+        int tp;
+        cnt ++;
+        do {
+            tp = st.top();
+            st.pop();
+            f[tp] = false;
+            id[tp] = cnt;
+            if(s[mn[cnt]].first > s[tp].first) mn[cnt] = tp;
+        } while(x != tp);
+    }
+
+}
+
+int main(){
+
+    cin >> n;
+
+    s[0].first = INT_MAX;
+    for(int i = 1; i <= n; i ++){
+        cin >> s[i].first;
+        s[i].second = i;
+    }
+
+    cin >> n;
+
+    for(int i = 1; i <= n; i ++)
+        for(int j = 1; j <= n; j ++){
+            cin >> c;
+            if(c == 'Y') a[i].push_back(j);
+        }
+
+    for(int i = 1; i <= n; i ++)
+        if(!dfn[i]) tarjan(i);
+
+    for(int i = 1; i <= n; i ++)
+        for(int to : a[i]) if(id[i] != id[to]) in[id[to]] ++;
+
+    for(int i = 1; i <= cnt; i ++)
+        if(!in[i]) nm ++, sum += s[mn[i]].first, mk[mn[i]] = 1;
+    
+    avg = 1.0 * sum / nm;
+
+    sort(s + 1, s + n + 1);
+
+    for(int i = 1; i <= n; i ++){
+        if(mk[s[i].second]) continue;
+        if(1.0 * (sum + s[i].first) / (nm + 1) >= avg) break;
+        sum += s[i].first, nm ++, avg = 1.0 * sum / nm;
+    }
+
+    printf("%.10lf\n", avg);
+
+    return 0;
+}*/
+
