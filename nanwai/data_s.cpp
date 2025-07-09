@@ -304,7 +304,7 @@ signed main(){
 }*/
 
 //J. 找乐子3
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
 
 #define int long long
@@ -418,4 +418,140 @@ signed main(){
     cout << ans << endl;
 
     return 0;
+}*/
+
+//H. 编辑
+/*#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1e6 + 7;
+
+stack <int> l, r;
+
+int sum[N], mx[N], cnt;
+
+int q, x, k;
+
+
+int main(){
+
+    cin >> q;
+
+    memset(mx, -0x3f, sizeof(mx));
+
+    while(q --){
+
+        char c;
+        cin >> c;
+
+        if(c == 'I'){
+            cin >> x;
+            l.push(x); ++ cnt;
+            sum[cnt] = sum[cnt - 1] + x;
+            mx[cnt] = max(mx[cnt - 1], sum[cnt]);
+        }
+        if(c == 'D'){
+            if(!l.empty()){
+                l.pop();
+                mx[cnt] = INT_MIN;
+                cnt --;
+            }
+        }
+        if(c == 'L'){
+            if(!l.empty()){
+                int now = l.top(); l.pop();
+                r.push(now);
+                mx[cnt] = INT_MIN;
+                cnt --;
+            }
+        }
+        if(c == 'R'){
+            if(!r.empty()){
+                int now = r.top(); r.pop();
+                l.push(now); cnt ++;
+                sum[cnt] = sum[cnt - 1] + now;
+                mx[cnt] = max(mx[cnt - 1], sum[cnt]);
+            }
+        }
+        if(c == 'Q'){
+            cin >> k;
+            if(cnt >= k)
+                cout << mx[cnt] << endl;
+        }
+
+    }
+
+    return 0;
+}*/
+
+//I. 函数
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define mid ((l + r) >> 1)
+
+const int N = 1e5 + 7;
+
+int a[N], st[N][20], lg[N];
+
+int n, t, q, l, r;
+
+void build(int n){
+    for(int i = 1; i <= n; i ++) st[i][0] = a[i];
+    for(int k = 1; k < 20; k ++)
+        for(int i = 1; i + (1 << k) - 1 <= n; i ++)
+            st[i][k] = min(st[i][k - 1], st[i + (1 << (k - 1))][k - 1]);
 }
+
+int st_query(int l, int r){
+    int k = lg[r - l + 1];
+    return min(st[l][k], st[r - (1 << k) + 1][k]);
+}
+
+int st_find(int l, int r, int x){
+    while(l <= r){
+        if(l == r) return st[l][0] <= x ? l : 0;
+        if(st_query(l, mid) <= x) r = mid;
+        else if(st_query(mid + 1, r) <= x) l = mid + 1;
+        else return 0;
+    }
+    return 0;
+}
+
+int ans(int l, int r, int x){
+    while(l <= r){
+        if(l == r) break;
+        l = st_find(l + 1, r, x);
+        if(!l) break;
+        x %= a[l];
+        if(!x) break;
+    }
+    return x;
+}
+
+int main(){
+
+    scanf("%d", &t);
+
+    lg[0] = -1;
+    for(int i = 1; i < N; i ++)
+        lg[i] = lg[i >> 1] + 1;
+
+    while(t --){
+
+        scanf("%d", &n);
+
+        for(int i = 1; i <= n; i ++)
+            scanf("%d", &a[i]);
+
+        build(n);
+        scanf("%d", &q);
+        while(q --){
+            scanf("%d %d", &l, &r);
+            printf("%d\n", ans(l, r, a[l]));
+        }
+        
+    }
+
+    return 0;
+}*/
