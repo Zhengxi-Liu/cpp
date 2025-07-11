@@ -247,7 +247,7 @@ signed main(){
 }*/
 
 //E. 梦幻岛宝珠
-/*#include<bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
 #define int long long
@@ -297,20 +297,20 @@ signed main(){
         dp[0] = 0;
         
         for(int cnt = 30; cnt >= 0; cnt --){
-
+            
             int dg = (m >> cnt) & 1;
-
+            
             for(int i = 0; i <= N; i ++) tmp[i] = -1e9;
-
+            
             for(int i = 0; i <= N; i ++)
                 tmp[min((i * 2) + dg, N)] = dp[i]; // power 减小以后, 缝隙扩大了 2 倍, 再加上 m 给的附加
-
+            
             for(int i = N - 1; i >= 0; i --)
-                tmp[i] = max(tmp[i], tmp[i + 1]);
-
+                tmp[i] = max(tmp[i], tmp[i + 1]); //如果使用空间更少的反而比使用空间更多的优, 则更新使用空间更多的
+            
             memcpy(dp, tmp, sizeof(dp));
-
-            for(str now : a[cnt]){
+            
+            for(str now : a[cnt]){ //背包
                 for(int j = 0; j <= N - now.w; j ++)
                     dp[j] = max(dp[j], dp[j + now.w] + now.v);
             }
@@ -320,5 +320,5 @@ signed main(){
     }
 
     return 0;
-}*/
+}
 
