@@ -149,3 +149,114 @@ signed main(){
     return 0;
 }*/
 
+//G. 区间checkGCD
+#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define mid ((l + r) >> 1)
+
+const int N = 1e5 + 7;
+
+int cov[N << 2], gcd[N << 2];
+
+int a[N], n, q, t, op, l, r, x;
+
+int GCD(int x, int y){
+    while(y){
+        int t = x % y;
+        x = y;
+        y = t;
+    }
+    return x;
+}
+
+void change(int k, int v1, int v2){
+    if(v1 != -1) cov[k] = v1;
+    gcd[k] = v2;
+}
+
+void push_down(int k){
+    change(k << 1, cov[k], gcd[k]);
+    change((k << 1) + 1, cov[k], gcd[k]);
+}
+
+void push_up(int k){
+    if(cov[k << 1] == cov[(k << 1) + 1]) cov[k] = cov[k << 1];
+    else cov[k] = -1;
+    if(gcd[k << 1] == gcd[(k << 1) + 1]) gcd[k] = gcd[k << 1];
+}
+
+void build(int k, int l, int r){
+    if(l == r){
+        cov[k] = a[l];
+        return; 
+    }
+    build(k << 1, l, mid);
+    build((k << 1) + 1, mid + 1, r);
+    push_up(k);
+}
+
+void upd1(int k, int l, int r, int x, int y, int v){
+    if(l >= x && r <= y){
+        change(k, v, 0);
+        return;
+    }
+    push_down(k);
+    if(mid >= x) upd1(k << 1, l, mid, x, y, v);
+    if(mid + 1 <= y) upd1((k << 1) + 1, mid + 1, r, x, y, v);
+    push_up(k);
+}
+
+void upd2(int k, int l, int r, int x, int y, int v){
+    if(l >= x && r <= y){
+        if(!gcd[k]) gcd[k] = v;
+        else gcd[k] = GCD(gcd[k], v);
+        return;
+    }
+    push_down(k);
+    if(mid >= x) upd2(k << 1, l, mid, x, y, v);
+    if(mid + 1 <= y) upd2((k << 1) + 1, mid + 1, r, x, y, v);
+    push_up(k);
+}
+
+int query(int k, int l, int r, int x){
+    if(l == x && r == x){
+        if(!gcd[k] && gcd[k] < cov[k]) cov[k] = GCD(cov[k], gcd[k]);
+    }
+}
+
+signed main(){
+
+    cin >> t;
+
+    while(t --){
+
+        memset(cov, -1, sizeof(cov));
+        memset(gcd, 0, sizeof(gcd));
+
+        cin >> n;
+
+        for(int i = 1; i <= n; i ++)
+            cin >> a[i];
+
+        build(1, 1, n);
+
+        cin >> q;
+
+        while(q --){
+            cin >> op >> l >> r >> x;
+            if(op == 1){
+                upd1(1, 1, n, l, r, x);
+            }
+            if(op == 2){
+                upd2(1, 1, n, l, r, x);
+            }
+        }
+
+
+
+    }
+
+    return 0;
+}
