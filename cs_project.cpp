@@ -183,11 +183,28 @@ int main(){
     //sleep(100);
     int t = clock();
     dfs(0, 0);
+    system("clear");
+    sleep(2);
+    cout << endl << ' ' << endl;
+    for(int i = 0; i <= e2; i ++) 
+        cout << "__";
+    cout << endl;
+    for(int i = 1; i <= e1; i ++){
+        cout << "|";
+        for(int j = 1; j <= e2; j ++)
+            cout << s[i][j] << ' ';
+        cout << "|" << endl;
+    }
+    for(int i = 0; i <= e2; i ++) 
+        cout << "__";
+
+    sleep(2);
+    
     cout << endl << endl << "OMG!!! YOU BEAT THIS GAME! CONGRATS!!! 😉" << endl;
     cout << endl << endl << "It took you " << 1.0 * (clock() - t) / 1000 << " seconds to beat this game." << endl;
     sleep(1);
     cout << endl << endl << "The high score is 34.79 seconds." << endl;
-    sleep(2);
+    sleep(10);
     system("clear");
     return 0;
 }
