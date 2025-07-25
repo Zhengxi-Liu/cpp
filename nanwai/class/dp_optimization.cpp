@@ -1,4 +1,4 @@
-//D. 赶集
+// D. 赶集
 /*#include<bits/stdc++.h>
 using namespace std;
 
@@ -84,7 +84,7 @@ signed main(){
     return 0;
 }*/
 
-//F. 最远点
+// F. 最远点
 /*#include<bits/stdc++.h>
 using namespace std;
 
@@ -134,7 +134,7 @@ signed main(){
     return 0;
 }*/
 
-//E. 图上LIS
+// E. 图上LIS
 /*#include<bits/stdc++.h>
 using namespace std;
 
@@ -186,8 +186,8 @@ int main(){
     return 0;
 }*/
 
-//G. 划分区间
-#include<bits/stdc++.h>
+// G. 划分区间
+/*#include<bits/stdc++.h>
 using namespace std;
 
 #define mid ((l + r) >> 1)
@@ -252,25 +252,198 @@ int qry(int k, int l, int r, int x, int y){
 }
 
 int main(){
-
+    
     cin >> n >> m;
-
+    
     for(int i = 1; i <= n; i ++){
         cin >> a[i];
         d[a[i]] = n + 1;
     }
+    
     for(int i = n; i >= 1; i --){
         lst[d[a[i]]] = i;
         d[a[i]] = i;
     }
+    
     for(int j = 1; j <= m; j ++){
         build(1, 1, n, j - 1);
         for(int i = j; i <= n; i ++){
             upd(1, 1, n, lst[i] + 1, i, 1);
-            dp[j][i] = qry(1, 1, n, j - 1, i);
+            dp[j][i] = qry(1, 1, n, j, i);
         }
     }
     cout << dp[m][n] << endl;
+    
+    return 0;
+}*/
+
+// H. 斜率
+/*#include<bits/stdc++.h>
+using namespace std;
+
+// 如果 L - 1 和 L 形成的斜率 <= k, L 就废了
+// 所以 while (slope(L - 1, L) <= k) L ++;
+// 于是推出斜率需要严格递增 (如果越来越小, 就会一直 L ++ 嘛)
+
+#define int long long
+const int N = 1e5 + 7;
+
+struct str{
+    int x, y;
+}a[N], stk[N], q[N];
+
+bool cmp(str a, str b){
+    if(a.x != b.x) return a.x < b.x;
+    return a.y < b.y;
+}
+
+int ans[N], n, m, head = 1, top = 2;
+
+bool check(str a, str b, str c){
+    return (b.y - a.y) * (c.x - b.x) <= (c.y - b.y) * (b.x - a.x);
+}
+
+int cal(str a, int k){
+    return a.x * k + a.y;
+}
+
+signed main(){
+
+    cin >> n >> m;
+
+    for(int i = 1; i <= n; i ++) 
+        cin >> a[i].x >> a[i].y;
+
+    sort(a + 1, a + n + 1, cmp);
+
+    stk[1] = a[1], stk[2] = a[2];
+    for(int i = 3; i <= n; i ++){
+        while(top >= 2 && check(stk[top - 1], stk[top], a[i])) top --;
+        stk[++ top] = a[i];
+    }
+    
+    for(int i = 1; i <= m; i ++)
+        cin >> q[i].x, q[i].y = i;
+    sort(q + 1, q + m + 1, cmp);
+    
+    for(int i = 1; i <= m; i ++){
+        while(head < top && cal(stk[head], q[i].x) <= cal(stk[head + 1], q[i].x)) head ++;
+        ans[q[i].y] = cal(stk[head], q[i].x);
+    }
+    
+    for(int i = 1; i <= m; i ++)
+        cout << ans[i] << endl;
 
     return 0;
+}*/
+
+// I. 土地并购
+
+// 50 pts: 实在找不出这个版本的错误
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+const int N = 4e5 + 7;
+
+struct str{
+    int x, y;
+}a[N], b[N], q[N];
+
+int dp[N], n, cnt, tail;
+
+bool cmp(str a, str b){
+    if(a.x == b.x) return a.y > b.y;
+    return a.x < b.x;
 }
+
+int cal(str a, int k){
+    return a.x * k + a.y;
+}
+
+bool check(str a, str b, str c){
+    return (c.y - b.y) * (b.x - a.x) >= (b.y - a.y) * (c.x - b.x); // 因为 slope 都是负的
+}
+
+double slope(str a, str b){
+    return 1.0 * (b.y - a.y) / (b.x - a.x);
+}
+
+signed main(){
+
+    cin >> n;
+
+    for(int i = 1; i <= n; i ++)
+        cin >> a[i].x >> a[i].y;
+
+    sort(a + 1, a + n + 1, cmp);
+
+    for(int i = n; i >= 1; i --){
+        int tmp = i;
+        while(i >= 2 && a[i - 1].x <= a[tmp].x && a[tmp].y >= a[i - 1].y) i --;
+        b[++ cnt] = a[tmp];
+    }
+    n = cnt;
+    
+    for(int i = 1; i <= n; i ++)
+        a[i] = b[n - i + 1];
+    
+    q[0] = {a[1].y, 0};
+    for(int i = 1; i <= n; i ++){
+        while(tail && cal(q[tail], a[i].x) > cal(q[tail - 1], a[i].x)) tail --;
+        dp[i] = cal(q[tail], a[i].x);
+        while(tail && slope(q[tail - 1], q[tail]) < slope(q[tail], {a[i + 1].y, dp[i]})) tail --;
+        q[++ tail] = {a[i + 1].y, dp[i]};
+    }
+    cout << dp[n] << endl;
+    return 0;
+}*/
+
+// 100 pts:
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+const int N = 4e5 + 7;
+
+struct str{
+    int x, y;
+}a[N], b[N];
+
+int dp[N], q[N], n, cnt, head, tail;
+
+bool cmp(str a, str b){
+    if(a.y == b.y) return a.x < b.x;
+    return a.y > b.y;
+}
+
+double slope(int x, int y){
+    return 1.0 * (dp[y] - dp[x]) / (a[x + 1].y - a[y + 1].y); // 反过来算
+}
+
+signed main(){
+
+    cin >> n;
+
+    for(int i = 1; i <= n; i ++)
+        cin >> b[i].x >> b[i].y;
+
+    sort(b + 1, b + n + 1, cmp);
+
+    for(int i = 1; i <= n; i ++){
+        if(b[i].x < a[cnt].x) continue;
+        a[++ cnt] = {b[i].x, b[i].y};
+    }
+    n = cnt;
+    
+    q[head] = 0;
+    for(int i = 1; i <= n; i ++){
+        while(head < tail && slope(q[head], q[head + 1]) <= a[i].x) head ++;
+        dp[i] = dp[q[head]] + a[q[head] + 1].y * a[i].x;
+        while(head < tail && slope(q[tail - 1], i) <= slope(q[tail - 1], q[tail])) tail --;
+        q[++ tail] = i;
+    }
+    cout << dp[n] << endl;
+    return 0;
+}*/
+
