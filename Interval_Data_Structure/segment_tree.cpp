@@ -235,92 +235,6 @@ int main(){
     return 0;
 }*/
 
-//乘法操作
-/*#include <bits/stdc++.h>
-using namespace std;
-const int N = 2e6 + 7;
-typedef long long LL;
-LL a[N], sum[N], add[N], mul[N];
-LL n, m, x, y, d, c, q;
-void push_up(int k) {
-    sum[k] = (sum[k * 2] + sum[k * 2 + 1]) % q;
-}
-void build(int k, int l, int r) {
-    if (l == r) {
-        sum[k] = a[l];
-        mul[k] = 1;
-        return;
-    }
-    int mid = (l + r) / 2;
-    build(k * 2, l, mid);
-    build(k * 2 + 1, mid + 1, r);
-    push_up(k);
-    mul[k] = 1;
-}
-void change(int k, int l, int r, LL va, LL vm) {
-    sum[k] = (sum[k] * vm + (r - l + 1) * va) % q;
-    mul[k] = mul[k] * vm % q;
-    add[k] = (add[k] * vm + va) % q;
-}
-void push_down(int k, int l, int r) {
-    if (mul[k] == 1 && add[k] == 0)
-        return;
-    int mid = (l + r) / 2;
-    change(k * 2, l, mid, add[k], mul[k]);
-    change(k * 2 + 1, mid + 1, r, add[k], mul[k]);
-    add[k] = 0;
-    mul[k] = 1;
-}
-void update(int k, int l, int r, int x, int y, LL va, LL vm) {
-    if (l >= x && r <= y) {
-        change(k, l, r, va, vm);
-        return;
-    }
-    push_down(k, l, r);
-    int mid = (l + r) / 2;
-    if (x <= mid)
-        update(k * 2, l, mid, x, y, va, vm);
-    if (y > mid)
-        update(k * 2 + 1, mid + 1, r, x, y, va, vm);
-    push_up(k);
-}
-LL query(int k, int l, int r, int x, int y) {
-    if (l >= x && r <= y)
-        return sum[k];
-    push_down(k, l, r);
-    int mid = (l + r) / 2;
-    LL res = 0;
-    if (x <= mid)
-        res = (res + query(k * 2, l, mid, x, y)) % q;
-    if (y > mid)
-        res = (res + query(k * 2 + 1, mid + 1, r, x, y)) % q;
-    return res;
-}
-#define FASTIO cin.tie(nullptr), cout.tie(nullptr);
-int main() {
-    FASTIO
-    cin >> n >> m >> q;
-    for (int i = 1;i <= n;i ++)
-        cin >> a[i];
-    build(1, 1, n);
-    while (m --){
-        cin >> c;
-        if (c == 1){
-            cin >> x >> y >> d;
-            update(1, 1, n, x, y, 0, d);
-        }
-        if (c == 2){
-            cin >> x >> y >> d;
-            update(1, 1, n, x, y, d, 1);
-        }
-        if (c == 3){
-            cin >> x >> y;
-            cout << query(1, 1, n, x, y) << endl;
-        }
-    }
-    return 0;
-}*/
-
 //区间gcd
 /*#include<bits/stdc++.h>
 using namespace std;
@@ -821,12 +735,100 @@ int main(){
     return 0;
 }*/
 
-//P6492 [COCI 2010/2011 #6] STEP
-#include<bits/stdc++.h>
+//P3373 【模板】线段树 2 (自己没事写的, 已经是到简单题了😁)
+/*#include<bits/stdc++.h>
 using namespace std;
+
+//不开 long long 见祖宗
+#define mid ((l + r) >> 1)
+#define kl k << 1
+#define kr (k << 1) | 1
+#define int long long
+
 const int N = 2e5 + 7;
 
-int main(){
+int sum[N << 2], mul[N << 2], add[N << 2], a[N];
+
+int n, m, q, op, x, y, k;
+
+void push_up(int k){
+    sum[k] = (sum[kl] + sum[kr]) % m;
+}
+
+void build(int k, int l, int r){
+    mul[k] = 1;
+    if(l == r){
+        sum[k] = a[l];
+        return;
+    }
+    build(kl, l, mid);
+    build(kr, mid + 1, r);
+    push_up(k);
+}
+
+void change(int k, int l, int r, int v, int op){
+    if(op == 2){
+        (sum[k] += v * (r - l + 1)) %= m;
+        (add[k] += v) %= m;
+    }
+    else {
+        (sum[k] *= v) %= m;
+        (mul[k] *= v) %= m;
+        (add[k] *= v) %= m;
+    }
+}
+
+void push_down(int k, int l, int r){
+    change(kl, l, mid, mul[k], 1);
+    change(kl, l, mid, add[k], 2);
+    change(kr, mid + 1, r, mul[k], 1);
+    change(kr, mid + 1, r, add[k], 2);
+    mul[k] = 1;
+    add[k] = 0;
+}
+
+void upd(int k, int l, int r, int x, int y, int v, int op){
+    if(l >= x && r <= y){
+        change(k, l, r, v, op);
+        return;
+    }
+    push_down(k, l, r);
+    if(mid >= x) upd(kl, l, mid, x, y, v, op);
+    if(mid + 1 <= y) upd(kr, mid + 1, r, x, y, v, op);
+    push_up(k);
+}
+
+int qry(int k, int l, int r, int x, int y){
+    if(l >= x && r <= y)
+        return sum[k];
+    push_down(k, l, r);
+    int res = 0;
+    if(mid >= x) res = qry(kl, l, mid, x, y);
+    if(mid + 1 <= y) res += qry(kr, mid + 1, r, x, y);
+    return res % m;
+}
+
+signed main(){
+
+    cin >> n >> q >> m;
+
+    for(int i = 1; i <= n; i ++) cin >> a[i];
+
+    build(1, 1, n);
+    
+    while(q --){
+
+        cin >> op >> x >> y;
+
+        if(op == 1 || op == 2){
+            cin >> k;
+            upd(1, 1, n, x, y, k, op);
+        }
+
+        else cout << qry(1, 1, n, x, y) << endl;
+        
+    }
 
     return 0;
-}
+}*/
+
