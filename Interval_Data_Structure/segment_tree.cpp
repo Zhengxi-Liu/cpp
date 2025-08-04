@@ -656,86 +656,106 @@ int main(){
     return 0;
 }*/
 
-//P1471 方差, 未完成❎
+//P1471 方差, 已完成✅
 /*#include<bits/stdc++.h>
 using namespace std;
-const int N = 1e5 + 7;
-double a[N], sum[N], add[N], square[N], v;
-int n, m, op, x, y;
-void push_up(int k){
-    sum[k] = sum[k * 2] + sum[k * 2 + 1];
-}
-void build(int k, int l, int r){
-    if(l == r){
-        sum[k] = a[l];
-        return;
-    }
-    int mid = (l + r) >> 1;
-    build(k * 2, l, mid);
-    build(k * 2 + 1, mid + 1, r);
-    push_up(k);
-}
-void change(int k, int l, int r, double v){
-    sum[k] += (r - l + 1) * v;
-    add[k] += v; 
-}
-void push_down(int k, int l, int r){
-    if(!add[k])
-        return;
-    int mid = (l + r) >> 1;
-    change(k * 2, l, mid, add[k]);
-    change(k * 2 + 1, mid + 1, r, add[k]);
-    add[k] = 0;
-}
-void update(int k, int l, int r, int x, int y, double v){
-    if(l >= x && r <= y){
-        change(k, l, r, v);
-        return;
-    }
-    push_down(k, l, r);
-    int mid = (l + r) >> 1;
-    if(mid >= x)
-        update(k * 2, l, mid, x, y, v);
-    if(mid < y)
-        update(k * 2 + 1, mid + 1, r, x, y, v);
-    push_up(k);
-}
-double query_sum(int k, int l, int r, int x, int y){
-    if(l >= x && r <= y)
-        return sum[k];
-    push_down(k, l, r);
-    int mid = (l + r) >> 1;
-    double res = 0;
-    if(mid >= x)
-        res += query_sum(k * 2, l, mid, x, y);
-    if(mid < y)
-        res += query_sum(k * 2 + 1, mid + 1, r, x, y);
-    return res;
-}
-int main(){
-    cin >> n >> m;
-    for(int i = 1;i <= n;i ++)
-        cin >> a[i];
-    build(1, 1, n);
-    while(m --){
-        cin >> op >> x >> y;
-        if(op == 1){
-            cin >> v;
-            update(1, 1, n, x, y, v);
-        }
-        else if(op == 2){
-            double s = query_sum(1, 1, n, x, y);
-            printf("%.4lf\n", s / (y - x + 1));
-        }
-        else {
-            double s = query_sum(1, 1, n, x, y), mean = s / (y - x + 1);
 
-        }
-    }
-    return 0;
+#define double long double
+#define mid ((l + r) >> 1)
+#define kl k << 1
+#define kr (k << 1) | 1
+
+const int N = 1e5 + 7;
+
+double sum[N << 2], qsum[N << 2], tag[N << 2], a[N], v;
+
+int n, q, op, x, y;
+
+void push_up(int k){
+	sum[k] = sum[kl] + sum[kr];
+	qsum[k] = qsum[kl] + qsum[kr];
+}
+
+void build(int k, int l, int r){
+	if(l == r){
+		sum[k] = a[l];
+		qsum[k] = a[l] * a[l];
+		return;
+	}
+	build(kl, l, mid);
+	build(kr, mid + 1, r);
+	push_up(k);
+}
+
+void change(int k, int l, int r, double v){
+	qsum[k] = qsum[k] + (r - l + 1) * v * v + 2 * v * sum[k]; 
+	sum[k] += (r - l + 1) * v;
+	tag[k] += v;
+}
+
+void push_down(int k, int l, int r){
+	if(!tag[k]) return;
+	change(kl, l, mid, tag[k]);
+	change(kr, mid + 1, r, tag[k]);
+	tag[k] = 0;
+}
+
+void upd(int k, int l, int r, int x, int y, double v){
+	if(l >= x && r <= y){
+		change(k, l, r, v);
+		return;
+	}
+	push_down(k, l, r); 
+	if(mid >= x) upd(kl, l, mid, x, y, v);
+	if(mid + 1 <= y) upd(kr, mid + 1, r, x, y, v);
+	push_up(k);
+}
+
+double qry(int k, int l, int r, int x, int y, int op){
+	if(l >= x && r <= y){
+		if(op == 1) return sum[k];
+		return qsum[k];
+	}
+	push_down(k, l, r); 
+	double res = 0;
+	if(mid >= x) res = qry(kl, l, mid, x, y, op);
+	if(mid + 1 <= y) res += qry(kr, mid + 1, r, x, y, op);
+	return res; 
+}
+
+int main(){
+	
+	cin >> n >> q;
+	
+	for (int i = 1; i <= n; i ++)
+		cin >> a[i];
+		
+	build(1, 1, n);
+	
+	while(q --){
+		
+		cin >> op >> x >> y;
+		
+		if(op == 1){
+			cin >> v;
+			upd(1, 1, n, x, y, v);
+		}
+		
+		if(op == 2)
+			printf("%.4Lf\n", qry(1, 1, n, x, y, 1) / (y - x + 1));
+		
+		if(op == 3){
+			double s = qry(1, 1, n, x, y, 1), t = qry(1, 1, n, x, y, 2);
+			printf("%.4Lf\n", (t - s * s / (y - x + 1)) / (y - x + 1));
+		}
+		
+	}
+	
+	
+	return 0;
 }*/
 
-//P3373 【模板】线段树 2 (自己没事写的, 已经是到简单题了😁)
+//P3373 【模板】线段树 2 (自己没事写的, 已经是道简单题了😁)
 /*#include<bits/stdc++.h>
 using namespace std;
 
@@ -831,4 +851,7 @@ signed main(){
 
     return 0;
 }*/
+
+//P3201 [HNOI2009] 梦幻布丁
+//https://www.luogu.com.cn/problem/P3201
 
