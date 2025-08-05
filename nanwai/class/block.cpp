@@ -1,66 +1,3 @@
-//E. 猪圈
-/*#include<iostream>
-#include<cmath> 
-using namespace std;
-
-const int N = 5e5 + 7, M = 1e4 + 7;
-
-int n, m, t, x, block;
-
-int a[N];
-
-long long s[M], ans;
-
-long long qry(int x, int y){
-	int l = x / block, r = y / block;
-	long long res = 0;
-	if(l == r){
-		for(int i = x; i <= y; i ++)
-			res += a[i];
-		return res; 
-	}
-	for(int i = l + 1; i <= r - 1; i ++) 
-		res += s[i];
-	for(int i = x; i < (l + 1) * block; i ++)
-		res += a[i];
-	for(int i = r * block; i <= y; i ++)
-		res += a[i];
-	return res;	
-}
-
-int main(){
-	
-	cin >> n >> m >> t;
-	
-	block = sqrt(n);
-	
-	for(int i = 1; i <= n; i ++){
-		scanf("%d", &a[i]);
-		s[i / block] += a[i]; 		
-	}
-	
-	while(m --){
-		
-		int l, r;
-		
-		scanf("%d %d", &l, &r); 
-		
-		if(t){
-			if(ans < 0) ans *= -1;
-			l = (l ^ ans) % n + 1;
-			r = (r ^ ans) % n + 1;
-		}
-        if(l > r) swap(l, r);
-        l = max(l, 1);
-        r = min(r, n);
-		ans = qry(l, r);
-		printf("%lld\n", ans);
-		
-	}
-	
-	return 0;
-}*/
-
 //C. 数列分块6
 /*#include<bits/stdc++.h>
 using namespace std;
@@ -125,6 +62,127 @@ int main(){
     }
 
     return 0;
+}*/
+
+//D. 小 Y 的背包计数问题
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 1e5 + 7, M = 317 + 7, MOD = 23333333;
+
+int n, m, sq, ans;
+
+int dp1[N], dp2[M][N];
+
+int sum[N];
+
+signed main(){
+
+    cin >> n;
+
+    sq = sqrt(n);
+
+    dp1[0] = 1;
+
+    // 从 1 至 √n 的 这些物品
+
+    for(int i = 1; i <= sq; i ++){
+
+        // 对于所有 j, 统计 ∑ dp1[k], k + i <= j, 即所有能转移过来的值
+        // sum[j] = dp[j] + dp[j - i] + dp[j - 2i] + dp[j - 3i] + ...
+        for(int j = 0; j <= n; j ++)
+            sum[j] = (dp1[j] + ((j >= i) ? sum[j - i] : 0)) % MOD;
+        
+        for(int j = 0; j <= n; j ++){
+            dp1[j] = sum[j];
+            // 如果超出了第 i 个物品的限制 (i + 1) * i, 就减去超出范围的和 (那些无法转移过来的, k + i * i < j)
+            // sum[j] - sum[j - (i + 1) * i] = dp[j] + dp[j - i] + ... - dp[j - (i + 1)i] - dp[j - (i + 2)i] - ...
+            if(j >= (i + 1) * i) dp1[j] = (dp1[j] - sum[j - (i + 1) * i] + MOD) % MOD;
+        }
+        
+    }
+
+    ans = dp1[n];
+
+    // 从 √n + 1 至 n 的这些物品
+
+    dp2[0][0] = 1;
+
+    for(int i = 1; i <= sq; i ++) // 物品个数
+        for(int j = i * (sq + 1); j <= n; j ++){ // i 个物品占用的最小空间
+            // 每个都加 1 和 前面新加入一个物品 √n + 1
+            dp2[i][j] = (dp2[i][j - i] + dp2[i - 1][j - (sq + 1)]) % MOD;
+            (ans += dp2[i][j] * dp1[n - j] % MOD) %= MOD;
+        }
+
+    cout << ans << endl;
+
+    return 0;
+}*/
+
+//E. 猪圈
+/*#include<iostream>
+#include<cmath> 
+using namespace std;
+
+const int N = 5e5 + 7, M = 1e4 + 7;
+
+int n, m, t, x, block;
+
+int a[N];
+
+long long s[M], ans;
+
+long long qry(int x, int y){
+	int l = x / block, r = y / block;
+	long long res = 0;
+	if(l == r){
+		for(int i = x; i <= y; i ++)
+			res += a[i];
+		return res; 
+	}
+	for(int i = l + 1; i <= r - 1; i ++) 
+		res += s[i];
+	for(int i = x; i < (l + 1) * block; i ++)
+		res += a[i];
+	for(int i = r * block; i <= y; i ++)
+		res += a[i];
+	return res;	
+}
+
+int main(){
+	
+	cin >> n >> m >> t;
+	
+	block = sqrt(n);
+	
+	for(int i = 1; i <= n; i ++){
+		scanf("%d", &a[i]);
+		s[i / block] += a[i]; 		
+	}
+	
+	while(m --){
+		
+		int l, r;
+		
+		scanf("%d %d", &l, &r); 
+		
+		if(t){
+			if(ans < 0) ans *= -1;
+			l = (l ^ ans) % n + 1;
+			r = (r ^ ans) % n + 1;
+		}
+        if(l > r) swap(l, r);
+        l = max(l, 1);
+        r = min(r, n);
+		ans = qry(l, r);
+		printf("%lld\n", ans);
+		
+	}
+	
+	return 0;
 }*/
 
 //F. 教主的魔法
@@ -333,3 +391,69 @@ int main(){
 }*/
 
 //J. 小B的询问
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 5e4 + 7;
+
+int n, m, k, x, y, block, tot = 1;
+
+struct str{
+    int l, r, id;
+};
+
+vector <str> b[N];
+
+int a[N], cnt[N], L[N], R[N], ans[N];
+
+bool cmp(str a, str b){
+    return a.r < b.r;
+}
+
+signed main(){
+
+    cin >> n >> m >> k;
+
+    block = sqrt(n);
+
+    for(int i = 1; i <= n; i ++){
+        cin >> a[i];
+        if(!(i % block)) L[++ tot] = i;
+        if(i % block == block - 1) R[tot] = i;
+    }
+    L[1] = 1, R[tot] = n;
+
+    for(int i = 1; i <= m; i ++){
+        cin >> x >> y;
+        b[x / block + 1].push_back({x, y, i});
+    }
+
+    for(int i = 1; i <= tot; i ++)
+        sort(b[i].begin(), b[i].end(), cmp);
+    
+    for(int i = 1; i <= tot; i ++){
+        if(!b[i].size()) continue;
+        str tmp = b[i][0];
+        memset(cnt, 0, sizeof(cnt));
+        int res = 0;
+        for(int j = tmp.l; j <= tmp.r; j ++)
+            res += 2 * cnt[a[j]] + 1, cnt[a[j]] ++;
+        int l = tmp.l, r = tmp.r, f = 0;
+        ans[tmp.id] = res;
+        for(str now : b[i]){
+            if(!(f ++)) continue;
+            while(l > now.l) res += cnt[a[-- l]] * 2 + 1, cnt[a[l]] ++;
+            while(l < now.l) res -= (cnt[a[l]] * 2 - 1), cnt[a[l]] --, l ++;
+            while(r < now.r) res += cnt[a[++ r]] * 2 + 1, cnt[a[r]] ++;
+            ans[now.id] = res;
+        }
+    }
+
+    for(int i = 1; i <= m; i ++)
+        cout << ans[i] << endl;
+
+    return 0;
+}*/
+
