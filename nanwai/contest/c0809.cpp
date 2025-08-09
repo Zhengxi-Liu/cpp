@@ -25,7 +25,7 @@ void check(){
     if(fi + se == lst) ans ++;
     if(fi - se == lst) ans ++;
     if(fi * se == lst) ans ++;
-    if(fi % se == 0 && se != 0 && fi / se == lst) ans ++;
+    if(se != 0 && fi % se == 0 && fi / se == lst) ans ++;
 }
 
 
@@ -52,7 +52,7 @@ int main(){
     ifstream fin("math.in");
     ofstream fout("math.out");
 
-    fin >> a >> b >> c;
+    cin >> a >> b >> c;
 
     n = a.size(), m = b.size(), len = c.size();
     a = " " + a, b = " " + b, c = " " + c;
@@ -64,56 +64,60 @@ int main(){
 
     dfs(0);
 
-    fout << ans << endl;
+    cout << ans << endl;
 
     return 0;
 }*/
 
 //B. 互质卡片
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
 
-const int N = 1e2 + 7;
+#define int long long
 
-int gcd(int x, int y){
-    if(!y) return x;
-    return gcd(y, x % y);
+const int N = 21;
+
+int l, r, ans;
+
+int dp[1 << N];
+
+int prime[N], cnt;
+
+bool isP(int x){
+    for(int i = 2; i * i <= x; i ++)
+        if(x % i == 0) return false;
+    return true;
 }
 
-int l, r, b[N], ans;
-
-void dfs(int step){
-    if(step > r){
-        for(int i = 0; i < r - l; i ++){
-            if(!b[i]) continue;
-            for(int j = i + 1; j <= r - l; j ++){
-                if(!b[j]) continue;
-                if(gcd(i + l, j + l) != 1) return;
-            }
-        }
-        ans ++;
-        return;
-    }
-    b[step - l] = 1;
-    dfs(step + 1);
-    b[step - l] = 0;
-    dfs(step + 1);
-}
-
-int main(){
+signed main(){
 
     ifstream fin("coprime.in");
     ofstream fout("coprime.out");
 
     fin >> l >> r;
 
-    if(r - l <= 20){
-        dfs(l);
-        fout << ans << endl;
+    for(int i = 2; i <= 72; i ++)
+        if(isP(i)) prime[cnt ++] = i;
+    cnt --;
+
+    dp[0] = 1;
+
+    for(int i = l; i <= r; i ++){
+        int st = 0;
+        for(int j = 0; j <= cnt; j ++)
+            if(i % prime[j] == 0) st |= (1 << j);
+        for(int b = 0; b < (1 << 20); b ++)
+            if(!(b & st))
+                dp[b | st] += dp[b];
     }
 
+    for(int b = 0; b < (1 << 20); b ++)
+        ans += dp[b];
+
+    fout << ans << endl;
+
     return 0;
-}
+}*/
 
 //C. 押韵字符串
 /*#include<bits/stdc++.h>
