@@ -52,6 +52,7 @@ int main(){
     }
     return 0;
 }*/
+
 /*#include<bits/stdc++.h>
 using namespace std;
 const int N = 2e5 + 7;
@@ -852,6 +853,184 @@ signed main(){
     return 0;
 }*/
 
-//P3201 [HNOI2009] 梦幻布丁
-//https://www.luogu.com.cn/problem/P3201
+//P5522 [yLOI2019] 棠梨煎雪 (70pts, 卡常卡掉了...)
+/*#include<bits/stdc++.h>
+using namespace std;
 
+#define kl (k << 1)
+#define kr ((k << 1) | 1)
+#define mid ((l + r) >> 1)
+
+const int N = 1e5 + 14, M = 30 + 7;
+
+string st[N << 2];
+
+char s[M], a[N][M];
+
+int n, m, q, op, x, y, ans;
+
+void push_up(string &res, string l, string r){
+    res = "";
+    if(r == "" || l == ""){
+        res = "";
+        return;
+    }
+    for(int i = 0; i < n; i ++){
+        if(l[i] == '?' && r[i] == '?') res += '?';
+        else if(l[i] == '?') res += r[i];
+        else if(r[i] == '?') res += l[i];
+        else if(l[i] == r[i]) res += l[i];
+        else {
+            res = "";
+            return;
+        }
+    }
+}
+
+void build(int k, int l, int r){
+    if(l == r){
+        st[k] = a[l];
+        return;
+    }
+    build(kl, l, mid);
+    build(kr, mid + 1, r);
+    push_up(st[k], st[kl], st[kr]);
+}
+
+void upd(int k, int l, int r, int pos, string s){
+    if(l == r){
+        st[k] = s;
+        return;
+    }
+    if(mid >= pos) upd(kl, l, mid, pos, s);
+    else upd(kr, mid + 1, r, pos, s);
+    push_up(st[k], st[kl], st[kr]);
+}
+
+string qry(int k, int l, int r, int x, int y){
+    if(l >= x && r <= y) return st[k];
+    string ll = ".", rr = ".", res;
+    if(mid >= x) ll = qry(kl, l, mid, x, y);
+    if(mid < y) rr = qry(kr, mid + 1, r, x, y);
+    if(ll == ".") return rr;
+    if(rr == ".") return ll;
+    push_up(res, ll, rr);
+    return res;
+}
+
+int cal(string s){
+    if(s == "") return 0;
+    int res = 0;
+    for(int i = 0; i < n; i ++)
+        if(s[i] == '?') res ++;
+    return (1 << res);
+}
+
+int main(){
+
+    scanf("%d %d %d", &n, &m, &q);
+
+    for(int i = 1; i <= m; i ++)
+        scanf("%s", a[i]);
+    
+    build(1, 1, m);
+
+    while(q --){
+        
+        scanf("%d %d", &op, &x);
+
+        if(!op){
+            scanf("%d", &y);
+            int tmp = cal(qry(1, 1, m, x, y));
+            ans ^= tmp;
+        }
+
+        else {
+            scanf("%s", s);
+            upd(1, 1, m, x, s);
+        }
+
+    }
+
+    printf("%d\n", ans);
+
+    return 0;
+}*/
+
+//P3201 [HNOI2009] 梦幻布丁
+#include<bits/stdc++.h>
+using namespace std;
+
+#define mid ((l + r) >> 1)
+
+const int N = 1e6 + 7;
+
+struct node{
+    int sum, L, R, lm, rm;
+}T[N << 3];
+
+int rt[N], tot;
+
+int n, q, x, y, op, ans;
+
+void push_up(int k, int l, int r){
+    int ls = T[k].L, rs = T[k].R;
+    T[k].sum = T[ls].sum + T[rs].sum;
+    if(T[ls].rm == mid && T[rs].lm == mid + 1) T[k].sum --;
+    if(!ls) T[k].lm = T[rs].lm, T[k].rm = T[rs].rm;
+    else if(!rs) T[k].lm = T[ls].lm, T[k].rm = T[ls].rm;
+    else T[k].lm = T[ls].lm, T[k].rm = T[rs].rm;
+}
+
+void upd(int &k, int l, int r, int x){
+    if(!k) k = ++ tot;
+    if(l == r){
+        T[k].sum = 1;
+        T[k].lm = T[k].rm = l;
+        return;
+    }
+    if(mid >= x) upd(T[k].L, l, mid, x);
+    else upd(T[k].R, mid + 1, r, x);
+    push_up(k, l, r);
+}
+
+int merge(int x, int y, int l, int r){
+    if(!x || !y) return x | y;
+    T[x].L = merge(T[x].L, T[y].L, l, mid);
+    T[x].R = merge(T[x].R, T[y].R, mid + 1, r);
+    push_up(x, l, r);
+    return x;
+}
+
+int main(){
+
+    cin >> n >> q;
+
+    for(int i = 1; i <= n; i ++){
+        cin >> x;
+        upd(rt[x], 1, n, i);
+    }
+
+    for(int i = 1; i < N; i ++)
+        ans += T[rt[i]].sum;
+
+    while(q --){
+
+        cin >> op;
+
+        if(op == 1){
+            cin >> x >> y;
+            if(x == y) continue;
+            ans -= T[rt[x]].sum;
+            ans -= T[rt[y]].sum;
+            rt[y] = merge(rt[y], rt[x], 1, n);
+            ans += T[rt[y]].sum;
+            rt[x] = 0;
+        }
+
+        else cout << ans << endl;
+
+    }
+
+    return 0;
+}

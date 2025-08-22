@@ -184,7 +184,7 @@ int main(){
     int t = clock();
     dfs(0, 0);
     system("clear");
-    sleep(2);
+    sleep(1);
     cout << endl << ' ' << endl;
     for(int i = 0; i <= e2; i ++) 
         cout << "__";

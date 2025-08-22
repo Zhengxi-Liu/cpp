@@ -114,38 +114,90 @@ signed main(){
 }*/
 
 // P11233 [CSP-S 2024] 染色
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
+
 #define int long long
-const int N = 2e3 + 7;
-int a[N], dp1[N][N], dp2[N][N]; // 上一个染的是红, dp1[当前 i][上一个染蓝的 j]; 上一个染的是蓝, dp2[当前 i][上一个染红的 j].
-int n, t, ans;
-int score(int x, int y){
-    if(x == y)
-        return x;
-    return 0;
-}
-signed main(){
-    cin >> t;
-    while(t --){
-        cin >> n;
-        for(int i = 1; i <= n; i ++){
-            cin >> a[i];
-        }
-        memset(dp1, 0, sizeof(dp1));
-        memset(dp2, 0, sizeof(dp2));
-        ans = 0;
-        for(int i = 1; i <= n; i ++){
-            for(int j = 0; j <= i - 2; j ++){
-                dp1[i][j] = dp1[i - 1][j] + score(a[i - 1], a[i]);
-                dp1[i][i - 1] = max(dp1[i][i - 1], dp2[i - 1][j] + score(a[j], a[i]));
-                dp2[i][j] = dp2[i - 1][j] + score(a[i - 1], a[i]);
-                dp2[i][i - 1] = max(dp2[i][i - 1], dp1[i - 1][j] + score(a[j], a[i]));
-            }
-            for(int j = 0; j < i; j ++)
-                ans = max(ans, max(dp1[i][j], dp2[i][j]));
-        }
-        cout << ans << endl;
+#define mid ((l + r) >> 1)
+#define kl (k << 1)
+#define kr ((k << 1) | 1)
+
+const int N = 1e6 + 7;
+
+int mx[N << 2], tag[N << 2];
+
+void change(int k, int op, int v){ // 1: 单点更新最大值; 2: 区间加
+    if(op == 1) mx[k] = max(mx[k], v);
+    else {
+        mx[k] += v;
+        tag[k] += v;
     }
-    return 0;
 }
+
+void push_down(int k){
+    if(!tag[k]) return;
+    change(kl, 2, tag[k]);
+    change(kr, 2, tag[k]);
+    tag[k] = 0;
+}
+
+void upd(int k, int l, int r, int x, int y, int op, int v){
+    if(l >= x && r <= y){
+        change(k, op, v);
+        return;
+    }
+    push_down(k);
+    if(mid >= x) upd(kl, l, mid, x, y, op, v);
+    if(mid < y) upd(kr, mid + 1, r, x, y, op, v);
+    mx[k] = max(mx[kl], mx[kr]);
+}
+
+int qry(int k, int l, int r, int x, int y){
+    if(l >= x && r <= y) return mx[k];
+    push_down(k);
+    int res = 0;
+    if(mid >= x) res = qry(kl, l, mid, x, y);
+    if(mid < y) res = max(res, qry(kr, mid + 1, r, x, y));
+    return res;
+}
+
+int a[N], b[N], lst[N], n, t;
+
+signed main(){
+
+    cin >> t;
+    
+    while(t --){
+
+        cin >> n;
+
+        int m = 0;
+
+        for(int i = 1; i <= n; i ++)
+            scanf("%lld", &a[i]), m = max(m, a[i]);
+
+        memset(mx, 0, sizeof(mx));
+        memset(tag, 0, sizeof(tag));
+        memset(b, 0, sizeof(b));
+
+        for(int i = 1; i <= n; i ++){
+            lst[i] = b[a[i]];
+            b[a[i]] = i;
+        }
+
+        for(int i = 2; i <= n; i ++){
+
+            int d1 = qry(1, 1, m, 1, m), d2 = qry(1, 1, m, a[i], a[i]);
+            
+            if(a[i] == a[i - 1]) upd(1, 1, m, 1, m, 2, a[i]);
+            if(lst[i]) upd(1, 1, m, a[i - 1], a[i - 1], 1, max(d1, d2 + a[i]));
+            else upd(1, 1, m, a[i - 1], a[i - 1], 1, d1);
+
+        }
+
+        cout << qry(1, 1, m, 1, m) << endl;
+
+    }
+
+    return 0;
+}*/

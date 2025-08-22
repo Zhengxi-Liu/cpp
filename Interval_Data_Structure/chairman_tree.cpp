@@ -73,7 +73,7 @@ int main(){
 
 //https://www.luogu.com.cn/problem/P3919
 //可持久化数组
-#include<bits/stdc++.h>
+/*#include<bits/stdc++.h>
 using namespace std;
 
 #define mid ((l + r) >> 1)
@@ -140,4 +140,73 @@ int main(){
     }
 
     return 0;
+}*/
+
+//P4587 [FJOI2016] 神秘数
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define mid ((l + r) >> 1)
+
+const int N = 1e5 + 7, INF = 1e9;
+
+struct node {
+    int sum, L, R;
+}T[N * 32];
+
+int rt[N], tot;
+
+int n, q, x, y;
+
+void upd(int &k, int y, int l, int r, int x){
+    k = ++ tot;
+    if(l == r){
+        T[k].sum = T[y].sum + x;
+        return;
+    }
+    T[k] = T[y];
+    if(mid >= x) upd(T[k].L, T[y].L, l, mid, x);
+    else upd(T[k].R, T[y].R, mid + 1, r, x);
+    T[k].sum = T[T[k].L].sum + T[T[k].R].sum;
 }
+
+int qry(int kl, int kr, int l, int r, int x, int y){
+    if(l >= x && r <= y) return T[kr].sum - T[kl].sum;
+    int res = 0;
+    if(mid >= x) res = qry(T[kl].L, T[kr].L, l, mid, x, y);
+    if(mid < y) res += qry(T[kl].R, T[kr].R, mid + 1, r, x, y);
+    return res;
+}
+
+signed main(){
+
+    cin >> n;
+
+    for(int i = 1; i <= n; i ++){
+        cin >> x;
+        upd(rt[i], rt[i - 1], 1, INF, x);
+        //cout << T[rt[i]].sum << endl;
+    }
+
+    cin >> q;
+
+    while(q --){
+
+        cin >> x >> y;
+
+        int lst = 0, ans = 1;
+
+        while(true){
+            int tmp = qry(rt[x - 1], rt[y], 1, INF, lst + 1, ans);
+            lst = ans;
+            if(tmp) ans += tmp;
+            else break;
+        }
+        cout << ans << endl;
+
+    }
+
+    return 0;
+}*/
+
