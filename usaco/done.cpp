@@ -58,3 +58,114 @@ int main(){
     return 0;
 }*/
 
+//P11840 [USACO25FEB] Vocabulary Quiz S
+/*#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1e6 + 7;
+
+vector <int> a[N];
+
+int n, x, cnt;
+
+int ans[N], fa[N], dep[N], sz[N];
+
+void dfs(int x, int lst){
+
+    dep[x] = !x ? 0 : dep[fa[x]] + 1;
+    ans[x] = lst;
+    sz[x] = a[x].size();
+
+    if(a[x].empty()){
+        cnt ++;
+        return;
+    }
+
+    for(int to : a[x]){
+        if(a[x].size() >= 2) dfs(to, to);
+        else dfs(to, lst);
+    }
+    
+}
+
+int main(){
+
+    cin >> n;
+
+    for(int i = 1; i <= n; i ++){
+        scanf("%d", &fa[i]);
+        a[fa[i]].push_back(i);
+    }
+
+    dfs(0, 0);
+
+    while(cnt --){
+
+        scanf("%d", &x);
+
+        if(!cnt){
+            cout << 0 << endl;
+            break;
+        }
+
+        int tmp = ans[x];
+        sz[fa[tmp]] --;
+
+        while(!sz[fa[tmp]]){
+            tmp = ans[fa[tmp]];
+            sz[fa[tmp]] --;
+        }
+
+        printf("%d\n", dep[tmp]);
+
+    }
+
+    return 0;
+}*/
+
+//P11841 [USACO25FEB] Transforming Pairs S
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+int a, b, x, y, t;
+
+int cal(int a, int b, int x, int y){
+    if(a > x || b > y) return -1;
+    if(a == x && b == y) return 0;
+    int res = 0;
+    while(a < x || b < y){
+        if(x > y){
+            if(!y) return -1;
+            int tmp = (x - a) / y;
+            if(!tmp) return -1;
+            x -= tmp * y;
+            res += tmp;
+        }
+        else if(x < y){
+            if(!x) return -1;
+            int tmp = (y - b) / x;
+            if(!tmp) return -1;
+            y -= tmp * x;
+            res += tmp;
+        }
+        else return -1;
+    }
+    if(a == x & b == y) return res;
+    return -1;
+}
+
+signed main(){
+
+    cin >> t;
+
+    while(t --){
+        cin >> a >> b >> x >> y;
+        cout << cal(a, b, x, y) << endl;
+    }
+
+
+    return 0;
+}*/
+
