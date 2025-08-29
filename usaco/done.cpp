@@ -319,3 +319,186 @@ signed main(){
     return 0;
 }*/
 
+//P4087 [USACO17DEC] Milk Measurement S
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define kl (k << 1)
+#define kr ((k << 1) | 1)
+#define mid ((l + r) >> 1)
+
+const int N = 1e5 + 7;
+
+int mx[N << 2], sz[N << 2];
+
+int b[N], cor[N], n, m, cnt, ans;
+
+struct str{
+    int date, id, val;
+}a[N];
+
+char c;
+
+bool cmp(str a, str b){
+    return a.date < b.date;
+}
+
+void push_up(int k){
+    if(mx[kl] > mx[kr]) sz[k] = sz[kl];
+    else if(mx[kr] > mx[kl]) sz[k] = sz[kr];
+    else sz[k] = sz[kl] + sz[kr];
+    mx[k] = max(mx[kl], mx[kr]);
+}
+
+void build(int k, int l, int r){
+    if(l == r){
+        mx[k] = m;
+        sz[k] = 1;
+        cor[l] = k;
+        return;
+    }
+    build(kl, l, mid);
+    build(kr, mid + 1, r);
+    push_up(k);
+}
+
+void upd(int k, int l, int r, int pos, int chg){
+    if(l == r){
+        mx[k] += chg;
+        return;
+    }
+    if(mid >= pos) upd(kl, l, mid, pos, chg);
+    else upd(kr, mid + 1, r, pos, chg);
+    push_up(k);
+}
+
+int main(){
+
+    cin >> n >> m;
+
+    for(int i = 1; i <= n; i ++){
+        cin >> a[i].date >> a[i].id >> c >> a[i].val;
+        if(c == '-') a[i].val *= -1;
+        b[i] = a[i].id;
+    }
+
+    sort(a + 1, a + n + 1, cmp);
+    sort(b + 1, b + n + 1);
+    cnt = unique(b + 1, b + n + 1) - b - 1;
+
+    for(int i = 1; i <= n; i ++)
+        a[i].id = lower_bound(b + 1, b + cnt + 1, a[i].id) - b;
+
+    build(1, 1, cnt + 1);
+
+    for(int i = 1; i <= n;){
+
+        int tmp = i, d1 = sz[1], d2 = mx[1], chg = 0, f = 0;
+
+        do {
+            if(mx[cor[a[i].id]] == d2){
+                if(!chg) chg = a[i].val;
+                else f = 1;
+            }
+            upd(1, 1, cnt + 1, a[i].id, a[i].val);
+            i ++;
+        } while(a[tmp].date == a[i].date);
+
+        if(sz[1] != d1 || f || d2 + chg != mx[1]) ans ++;
+        
+    }
+
+    cout << ans << endl;
+
+    return 0;
+}
+*/
+
+//P4186 [USACO18JAN] Cow at Large G
+/*#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 7;
+
+vector <int> a[N];
+
+int dep[N], mn[N];
+
+int n, m, x, y, ans;
+
+void dfs(int x, int fa){
+    dep[x] = dep[fa] + 1;
+    mn[x] = 1e9;
+    for(int to : a[x]){
+        if(to == fa) continue;
+        dfs(to, x);
+        mn[x] = min(mn[x], mn[to]);
+    }
+    if(a[x].size() == 1) mn[x] = 1;
+    else mn[x] ++;
+}
+
+void find(int x, int fa){
+    if(dep[x] >= mn[x]){
+        ans ++;
+        return;
+    }
+    for(int to : a[x]){
+        if(to == fa) continue;
+        find(to, x);
+    }
+}
+
+int main(){
+
+    cin >> n >> m;
+
+    for(int i = 1; i < n; i ++){
+        cin >> x >> y;
+        a[x].push_back(y);
+        a[y].push_back(x);
+    }
+
+    dfs(m, 0);
+
+    find(m, 0);
+
+    cout << ans << endl;
+
+    return 0;
+}
+
+*/
+
+//P4187 [USACO18JAN] Stamp Painting G
+/*#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 1e6 + 7, MOD = 1e9 + 7;
+
+int dp[N], sum, n, m, k, ans = 1;
+
+signed main(){
+
+    cin >> n >> m >> k;
+
+    for(int i = 1; i <= n; i ++)
+        ans = ans * m % MOD;
+
+    dp[0] = 1;
+
+    for(int i = 1; i <= n; i ++){
+        if(i < k) dp[i] = (dp[i - 1] * m) % MOD;
+        else dp[i] = sum * (m - 1) % MOD;
+        (sum += dp[i]) %= MOD;
+        if(i >= k) (sum -= dp[i - k + 1]) %= MOD;
+    }
+
+    cout << ((ans - dp[n]) % MOD + MOD) % MOD << endl;
+
+    return 0;
+}
+
+*/
