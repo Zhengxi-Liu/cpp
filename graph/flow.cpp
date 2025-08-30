@@ -412,3 +412,111 @@ signed main(){
     return 0;
 }*/
 
+//P1343 地震逃生
+#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+
+const int N = 4e3 + 7;
+
+struct str{
+    int to, v, nxt;
+}a[N];
+
+int lst[N], k = 1;
+
+void add(int x, int y, int v){
+    a[++ k] = {y, v, lst[x]};
+    lst[x] = k;
+}
+
+int n, m, sum, x, y, v;
+
+int dis[N], jump[N];
+queue <int> q;
+
+bool bfs(){
+
+    while(!q.empty()) q.pop();
+    q.push(1);
+
+    memset(dis, 0, sizeof(dis));
+    dis[1] = 1;
+
+    while(!q.empty()){
+        int now = q.front();
+        q.pop();
+        for(int i = lst[now]; i; i = a[i].nxt){
+            int to = a[i].to;
+            if(dis[to] || !a[i].v) continue;
+            dis[to] = dis[now] + 1;
+            q.push(to);
+            if(to == n) return true;
+        }
+    }
+
+    return false;
+
+}
+
+int dfs(int x, int mn){
+
+    if(x == n) return mn;
+
+    int sum = 0;
+
+    for(int i = jump[x]; i; i = a[i].nxt){
+
+        int to = a[i].to;
+
+        if(dis[to] != dis[x] + 1 || !a[i].v) continue;
+
+        int tmp = dfs(to, min(mn, a[i].v));
+
+        sum += tmp;
+        mn -= tmp;
+
+        a[i].v -= tmp;
+        a[i ^ 1].v += tmp;
+
+        if(!mn) break;
+
+    }
+
+    if(!sum) dis[x] = 0;
+    return sum;
+
+}
+
+int dinic(){
+
+    int res = 0;
+
+    while(bfs()){
+        memcpy(jump, lst, sizeof lst);
+        res += dfs(1, LLONG_MAX);
+    }
+
+    return res;
+
+}
+
+signed main(){
+
+    cin >> n >> m >> sum;
+
+    for(int i = 1; i <= m; i ++){
+        cin >> x >> y >> v;
+        add(x, y, v);
+        add(y, x, 0);
+    }
+
+    int tmp = dinic();
+
+    if(!tmp) cout << "Orz Ni Jinan Saint Cow!\n";
+    else cout << tmp << ' ' << (sum - 1) / tmp + 1 << endl;
+
+    return 0;
+}
+
